@@ -1,0 +1,10 @@
+
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+
+todoBackend/bin/
+todoBackend/obj/
+
+todo-frontend/node_modules/
