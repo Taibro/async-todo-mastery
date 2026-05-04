@@ -11,10 +11,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("d80d8007-66ee-4736-9e3c-eaf4644f2f48")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("todoBackend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ccdbbee39743fbd383516341728e5074c957e84c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+56f4a8c13a57bfb1596e484428c9849539f689ab")]
 [assembly: System.Reflection.AssemblyProductAttribute("todoBackend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("todoBackend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

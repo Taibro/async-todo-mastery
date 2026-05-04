@@ -35,14 +35,23 @@ namespace todoBackend
 
             var app = builder.Build();
 
+            using(var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<TodoDbContext>();
+                dbContext.Database.Migrate();
+            }
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
+            app.UseCors("ReactApp");
 
+            
             app.UseAuthorization();
 
 
