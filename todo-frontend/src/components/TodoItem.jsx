@@ -26,7 +26,7 @@ function TodoItem({ todo, onToggle, onDelete}){
                 {syncIndicator[todo.syncStatus] || ''}
             </span>
 
-            <button onClick={() => onDelete(todo.id)}></button>
+            <button onClick={() => onDelete(todo.id)}>Delete</button>
         </div>
     );
 }

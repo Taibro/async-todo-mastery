@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using todoBackend.Data;
+using todoBackend.Models;
 
 namespace todoBackend.Controllers
 {
@@ -29,6 +30,73 @@ namespace todoBackend.Controllers
                 .ToListAsync();
 
             return Ok(todos);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] TodoItem todo)
+        {
+            if (string.IsNullOrWhiteSpace(todo.Title))
+            {
+                return BadRequest("Title is required.");
+            }
+            todo.CreatedAt = DateTime.UtcNow;
+            todo.SyncStatus = "synced";
+
+            _context.TodoItems.Add(todo);
+            await _context.SaveChangesAsync();
+            return CreatedAtAction(nameof(GetAll), new { id = todo.Id }, todo);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] TodoItem updatedTodo)
+        {
+            var existingTodo = await _context.TodoItems.FindAsync(id);
+            if (existingTodo == null)
+            {
+                return NotFound();
+            }
+            existingTodo.Title = updatedTodo.Title;
+            existingTodo.IsCompleted = updatedTodo.IsCompleted;
+            existingTodo.SyncStatus = "synced";
+
+            await _context.SaveChangesAsync();
+            return Ok(existingTodo);
+
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var existingTodo = await _context.TodoItems.FindAsync(id);
+            if (existingTodo == null)
+            {
+                return NotFound();
+            }
+            _context.TodoItems.Remove(existingTodo);
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
+        [HttpPost("bulk")]
+        public async Task<IActionResult> BulkAction([FromBody] BulkRequest bulkRequest)
+        {
+            var todos = await _context.TodoItems.Where(t => bulkRequest.Ids.Contains(t.Id)).ToListAsync();
+            switch (bulkRequest.Action.ToLower())
+            {
+                case "delete":
+                    _context.TodoItems.RemoveRange(todos);
+                    break;
+                case "archive":
+                    foreach (var todo in todos)
+                    {
+                        todo.IsArchived = true;
+                    }
+                    break;
+                default:
+                    return BadRequest("Action phai la delete hoac archive.");
+            }
+            await _context.SaveChangesAsync();
+            return Ok(new { affected = todos.Count });
         }
     }
 }
