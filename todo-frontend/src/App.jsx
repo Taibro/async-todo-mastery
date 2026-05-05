@@ -2,14 +2,20 @@ import { useState } from 'react'
 import TodoItem from './components/TodoItem'
 import { useTodos } from './hooks/useTodos'
 import SearchBar from './components/SearchBar';
+import { useToast } from './hooks/useToast';
+import { TbReceiptYen } from 'react-icons/tb';
+import Toast from './components/Toast';
+import BulkAction from './components/BulkActions';
 
 function TodoApp() {
+  const {toasts, showToast, removeToast} = useToast();
+
   const {
     todos,
     loading,
-    error,
     searchTerm,
     setSearchTerm,
+    toggleComplete,
     addTodo,
     removeTodo,
     reload
@@ -18,11 +24,20 @@ function TodoApp() {
     const [newTitle, setNewTitle] = useState('');
     const [selectedIds, setSelectedIds] = useState([]);
 
+    const handleToggle = async (todo) => {
+      try{
+        await toggleComplete(todo);
+      }catch{
+        showToast('Khong the cap nhat', 'error');
+      }
+    }
+
   const handleDelete = async (id) => {
     try{
       await removeTodo(id);
+      showToast('Da xoa todo', 'success');
     }catch{
-
+      showToast('Xoa that bai', 'error');
     }
   };
 
@@ -33,8 +48,9 @@ function TodoApp() {
     try{
       await addTodo(newTitle);
       setNewTitle('');
+      showToast('Da them todo!', 'success');
     }catch{
-
+      showToast('Them that bai!', 'error');
     }
   };
 
@@ -48,11 +64,17 @@ function TodoApp() {
           onChange={e => setNewTitle(e.target.value)}
           placeholder='Them todo moi'
         />
-        <button type='submi'>Them</button>
+        <button type='submit'>Them</button>
       </form>
 
       <SearchBar value={searchTerm} onChange={setSearchTerm}/>
 
+      <BulkAction
+        todos={todos}
+        selectedIds={selectedIds}
+        onSelectionChange={setSelectedIds}
+        onComplete={reload}
+      />
 
       {loading && <div className='loading'>Dang tai...</div>}
 
@@ -61,6 +83,7 @@ function TodoApp() {
           <TodoItem
             key={todo.id}
             todo={todo}
+            onToggle={handleToggle}
             onDelete={handleDelete}
           />
         ))}
@@ -68,6 +91,8 @@ function TodoApp() {
           <p className='empty'>Không có todo nào</p>
         )}
       </div>
+
+      <Toast toasts={toasts} onRemove={removeToast}/>
     </div>
   )
 }

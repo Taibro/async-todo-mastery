@@ -27,6 +27,26 @@ export function useTodos(){
         loadTodos();
     }, [loadTodos])
 
+    const toggleComplete = async (todo) => {
+        const previousTodos = todos;
+
+        setTodos(prev => 
+            prev.map(t => 
+                t.id === todo.id ? { ...t, isCompleted: !t.isCompleted, syncStatus: 'pending' } : t)
+        )
+
+        try{
+            await updateTodo(todo.id, {...todo, isCompleted: !todo.isCompleted});
+
+            setTodos(prev => 
+                prev.map(t => t.id === todo.id ? { ...t, syncStatus: 'synced'} : t)
+            );
+        } catch(err){
+            setTodos(previousTodos);
+            throw err;
+        }
+    };
+
     const addTodo = async (title) => {
         if (!title.trim()) return;
         const {data} = await createTodo(title);
@@ -50,6 +70,7 @@ export function useTodos(){
         error,
         searchTerm,
         setSearchTerm,
+        toggleComplete,
         addTodo,
         removeTodo,
         reload: loadTodos
