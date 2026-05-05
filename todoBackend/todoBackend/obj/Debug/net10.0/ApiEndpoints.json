@@ -1,0 +1,18 @@
+[
+  {
+    "ContainingType": "todoBackend.Controllers.TodosController",
+    "Method": "GetAll",
+    "RelativePath": "api/Todos",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

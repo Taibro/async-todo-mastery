@@ -14,10 +14,12 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '8.0.x'
+        dotnet-version: '10.0.x'
     - name: Restore dependencies
+      working-directory: ./todoBackend
       run: dotnet restore ./todoBackend/todoBackend.csproj
     - name: Build
+      working-directory: ./todoBackend
       run: dotnet build ./todoBackend/todoBackend.csproj -c Release --no-restore
 
   build-frontend:
@@ -27,10 +29,10 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '18'
+        node-version: '20'
     - name: Install dependencies
       working-directory: ./todo-frontend
-      run: npm ci
+      run: npm install
     - name: Build frontend
       working-directory: ./todo-frontend
       run: npm run build
