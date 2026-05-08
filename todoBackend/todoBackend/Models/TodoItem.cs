@@ -6,6 +6,10 @@
 
         public string Title { get; set; } = string.Empty;
 
+        public DateTime Date { get; set; }
+
+        public TimeOnly Time { get; set; }
+
         public bool IsCompleted { get; set; } = false;
 
         public bool IsArchived { get; set; } = false;

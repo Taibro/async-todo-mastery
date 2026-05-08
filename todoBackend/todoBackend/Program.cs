@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using todoBackend.Data;
+using todoBackend.Middleware;
 
 namespace todoBackend
 {
@@ -51,6 +52,7 @@ namespace todoBackend
 
             app.UseCors("ReactApp");
 
+            app.UseMiddleware<ChaosMiddleware>();
             
             app.UseAuthorization();
 
